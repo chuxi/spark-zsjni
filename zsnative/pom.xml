@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>spark-zsjni</artifactId>
+        <groupId>com.windjammer.zetascale</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>zsnative</artifactId>
+
+    <packaging>so</packaging>
+    <properties>
+        <cmake.root.dir>/home/king/svr/cmake</cmake.root.dir>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>gcc</compilerExecutable>
+                    <linkerExecutable>gcc</linkerExecutable>
+
+                    <sources>
+                        <source>
+                            <directory>src/main/c</directory>
+                            <includes>
+                                <include>*.c</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <compilerStartOptions>
+                        <compilerStartOption>-I src/main/c/zs_sdk-2.0/include</compilerStartOption>
+                        <compilerStartOption>-I ${java.home}/../include</compilerStartOption>
+                        <compilerStartOption>-I ${java.home}/../include/linux</compilerStartOption>
+                        <compilerStartOption>-fPIC</compilerStartOption>
+                    </compilerStartOptions>
+                    <linkerEndOptions>
+                        <linkerEndOption>src/main/c/zs_sdk-2.0/lib/libzsdll.a</linkerEndOption>
+                        <linkerEndOption>-lpthread</linkerEndOption>
+                        <linkerEndOption>-ldl</linkerEndOption>
+                        <linkerEndOption>-laio</linkerEndOption>
+                        <linkerEndOption>-levent</linkerEndOption>
+                        <linkerEndOption>-lsnappy</linkerEndOption>
+                        <linkerEndOption>-shared</linkerEndOption>
+                    </linkerEndOptions>
+                    <!--<linkerFinalName>libSample1</linkerFinalName>-->
+                </configuration>
+
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.googlecode.cmake-maven-project</groupId>-->
+                <!--<artifactId>cmake-maven-plugin</artifactId>-->
+                <!--<version>3.7.2-b1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>cmake-generate</id>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<sourcePath>${project.basedir}/src/main/c</sourcePath>-->
+                            <!--<targetPath>${project.build.outputDirectory}/cmake</targetPath>-->
+                            <!--<generator>Unix Makefiles</generator>-->
+                            <!--<classifier>linux-x86_64</classifier>-->
+                            <!--<environmentVariables>-->
+                                <!--<JAVA_HOME>${java.home}/../</JAVA_HOME>-->
+                            <!--</environmentVariables>-->
+                            <!--<downloadBinaries>false</downloadBinaries>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>cmake-compile</id>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<target>${project.build.outputDirectory}</target>-->
+                            <!--<projectDirectory>${project.build.outputDirectory}/cmake</projectDirectory>-->
+                            <!--<classifier>linux-x86_64</classifier>-->
+                            <!--<environmentVariables>-->
+                                <!--<JAVA_HOME>${java.home}/../</JAVA_HOME>-->
+                            <!--</environmentVariables>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+        </plugins>
+    </build>
+</project>

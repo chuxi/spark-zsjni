@@ -21,7 +21,7 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeThread_ZSInitPerThr
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeThread_ZSReleasePerThreadState
-  (JNIEnv *, jclass, jobject);
+  (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
 }

@@ -77,7 +77,7 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSSetCont
  * Signature: (J[B[BJI)I
  */
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSWriteObject
-  (JNIEnv *, jclass, jlong, jbyteArray, jbyteArray, jlong, jint);
+  (JNIEnv *, jclass, jlong, jlong, jbyteArray, jbyteArray, jint);
 
 /*
  * Class:     com_windjammer_zetascale_ZSNativeContainer
@@ -85,7 +85,7 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSWriteOb
  * Signature: (J[BJ)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSReadObject
-  (JNIEnv *, jclass, jlong, jbyteArray, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jbyteArray);
 
 /*
  * Class:     com_windjammer_zetascale_ZSNativeContainer
@@ -93,7 +93,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSR
  * Signature: (J[BJ)I
  */
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSDeleteObject
-  (JNIEnv *, jclass, jlong, jbyteArray, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jbyteArray);
 
 /*
  * Class:     com_windjammer_zetascale_ZSNativeContainer
@@ -101,7 +101,7 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSDeleteO
  * Signature: (J[BJ)I
  */
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSFlushObject
-  (JNIEnv *, jclass, jlong, jbyteArray, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jbyteArray);
 
 /*
  * Class:     com_windjammer_zetascale_ZSNativeContainer

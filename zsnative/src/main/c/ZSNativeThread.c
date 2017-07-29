@@ -7,15 +7,15 @@
 extern struct ZS_state *state;
 
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeThread_ZSInitPerThreadState
-        (JNIEnv *env, jclass jcls, jobject jthreadState) {
-    jclass jthreadStateClass = (*env)->GetObjectClass(env, jthreadState);
-    jfieldID thd_stateId = (*env)->GetFieldID(env, jthreadStateClass, "thread_state", "J");
+        (JNIEnv *env, jclass jcls, jobject jthread_state) {
+    jclass jthread_state_class = (*env)->GetObjectClass(env, jthread_state);
+    jfieldID thd_stateId = (*env)->GetFieldID(env, jthread_state_class, "threadStateHandler", "J");
 
     struct ZS_thread_state *thd_state;
     ZS_status_t status = ZSInitPerThreadState(state, &thd_state);
 
     // store thd_state in jthreadState object
-    (*env)->SetLongField(env, jthreadState, thd_stateId, (uint64_t)thd_state);
+    (*env)->SetLongField(env, jthread_state, thd_stateId, (uint64_t)thd_state);
     return status;
 }
 
@@ -25,8 +25,8 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeThread_ZSInitPerThr
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeThread_ZSReleasePerThreadState
-        (JNIEnv *env, jclass jcls, jlong jthread_state) {
-    struct ZS_thread_state *thd_state = (struct ZS_thread_state *)jthread_state;
+        (JNIEnv *env, jclass jcls, jlong jthread_state_handler) {
+    struct ZS_thread_state *thd_state = (struct ZS_thread_state *)jthread_state_handler;
     ZS_status_t status = ZSReleasePerThreadState(&thd_state);
     return status;
 }

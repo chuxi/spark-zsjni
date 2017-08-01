@@ -100,8 +100,8 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSOpenCon
     getContainerProp(env, &props, jcontainer_prop);
     struct ZS_thread_state *thd_state = (struct ZS_thread_state *)jthread_state_handler;
     const char *cname = (*env)->GetStringUTFChars(env, jname, NULL);
-    printf("open container with properties: cguid %ld, flags %d, size_kb %ld \n",
-           (long)props.cguid, (int)props.flags, props.size_kb);
+//    printf("open container with properties: cguid %ld, flags %d, size_kb %ld \n",
+//           (long)props.cguid, (int)props.flags, props.size_kb);
     ZS_cguid_t cguid = 0;
     ZS_status_t status = ZSOpenContainer(thd_state, cname, &props, (uint32_t)flag, &cguid);
 

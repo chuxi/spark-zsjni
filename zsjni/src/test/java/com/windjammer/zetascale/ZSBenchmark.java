@@ -1,43 +1,24 @@
 package com.windjammer.zetascale;
 
 import com.windjammer.zetascale.exception.ZSContainerException;
-import com.windjammer.zetascale.exception.ZSException;
 import com.windjammer.zetascale.exception.ZSThreadException;
-import org.junit.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by king on 17-7-29.
+ * Created by king on 17-7-31.
  */
-public class ZSManagerTest {
-    private int N = 4;
-    private ExecutorService service = Executors.newFixedThreadPool(N);
+public class ZSBenchmark {
+    private static int N = 4;
+    private static int M = 100 * 1000;
+    private static ExecutorService service = Executors.newFixedThreadPool(N);
     private static ZSManager manager = ZSManager.getInstance();
 
-    @BeforeClass
-    public static void beforeClass() {
-        try {
-            manager.init("zs.prop");
-            manager.initPerThreadState();
-        } catch (ZSException e) {
-            throw new RuntimeException("initial ZSManager failed.", e);
-        }
-    }
+    public static void main(String[] args) throws Exception {
+        manager.init("zs.prop");
+        manager.initPerThreadState();
 
-    @Test
-    public void singleThreadOperations() throws Exception {
-        ZSContainer container = manager.getContainer("container-test");
-        byte[] key = "key-test".getBytes();
-        String data = "data-test";
-        container.write(key, data.getBytes());
-        String result = new String(container.read(key));
-        Assert.assertEquals(data, result);
-    }
-
-    @Test
-    public void basicContainerOperations() throws Exception {
         Thread[] threads = new Thread[N];
         for (int i = 0; i < N; i++) {
             Thread t = new ZSThread(i);
@@ -47,17 +28,13 @@ public class ZSManagerTest {
         for (Thread t: threads) {
             t.join();
         }
-//        Thread.sleep(10000);
-    }
 
-    @AfterClass
-    public static void afterClass() throws Exception {
         manager.releasePerThreadState();
         manager.shutdown();
     }
 
 
-    public class ZSThread extends Thread {
+    public static class ZSThread extends Thread {
         private final int index;
 
         ZSThread(int index) throws ZSThreadException {
@@ -69,11 +46,12 @@ public class ZSManagerTest {
             try {
                 manager.initPerThreadState();
                 ZSContainer container = manager.getContainer("container-" + index);
-                byte[] key = ("key-" + index).getBytes();
-                String data = "data" + index;
-                container.write(key, data.getBytes());
-                String result = new String(container.read(key));
-                Assert.assertEquals(data, result);
+                for (int i = 0; i < M; i++) {
+                    byte[] key = ("key-" + index + "-" + i).getBytes();
+                    String data = "data" + index + "-" + i;
+                    container.write(key, data.getBytes());
+                    container.read(key);
+                }
             } catch (ZSContainerException e) {
                 throw new RuntimeException("container error.", e);
             } catch (ZSThreadException e) {

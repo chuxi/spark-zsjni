@@ -3,7 +3,7 @@
 #include "include/com_windjammer_zetascale_ZSNative.h"
 #include "zs.h"
 
-static struct ZS_state *state;
+struct ZS_state *state;
 
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNative_ZSLoadProperties
   (JNIEnv *env, jclass jcls, jstring jpath) {
@@ -28,11 +28,12 @@ JNIEXPORT void JNICALL Java_com_windjammer_zetascale_ZSNative_ZSSetProperty
 
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNative_ZSInit
   (JNIEnv *env, jclass jcls, jobject jstate) {
-    jfieldID cguidId = (*env)->GetFieldID(env, jcls, "cguidHandler", "J");
+    jclass jstate_class = (*env)->GetObjectClass(env, jstate);
+    jfieldID cguidId = (*env)->GetFieldID(env, jstate_class, "cguidHandler", "J");
 
     ZS_status_t status = ZSInit(&state);
     // set the cguid_cntr in zs_state
-    (*env)->SetLongField(env, jstate, cguidId, (jlong)state);
+    (*env)->SetLongField(env, jstate, cguidId, (jlong)status);
     return status;
 }
 

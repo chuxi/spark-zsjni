@@ -27,7 +27,7 @@ public class ZSManager {
 
     private ZSManager() {}
 
-    public ZSManager getInstance() {
+    public static ZSManager getInstance() {
         if (instance == null) {
             instance = new ZSManager();
         }
@@ -79,6 +79,7 @@ public class ZSManager {
         ZSThreadState threadState = threadStateLocal.get();
         if (!threadState.isInitialized()) {
             int resultCode = ZSNativeThread.ZSInitPerThreadState(threadState);
+            logger.info("init threadStateHandler: " + threadState.getThreadStateHandler());
             ZSExceptionHandler.handleThread(resultCode);
             threadStateLocal.set(threadState);
         }
@@ -88,6 +89,7 @@ public class ZSManager {
         ZSThreadState threadState = threadStateLocal.get();
         if (threadState.isInitialized()) {
             int resultCode = ZSNativeThread.ZSReleasePerThreadState(threadState.getThreadStateHandler());
+            logger.info("release threadStateHandler: " + threadState.getThreadStateHandler());
             ZSExceptionHandler.handleThread(resultCode);
             threadStateLocal.remove();
         }

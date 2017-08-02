@@ -7,6 +7,9 @@ import com.windjammer.zetascale.type.ContainerProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 /**
@@ -38,7 +41,19 @@ public class ZSManager {
 
     // initial zs_state, load properties from file in classpath
     public void init(String propFileName) throws ZSException {
+        init(propFileName, true);
+    }
+
+    public void init(String propFileName, boolean format) throws ZSException {
         this.loadProperties(getPropFilePath(propFileName));
+        if (!format) {
+            String flashFilename = getProperty("ZS_FLASH_FILENAME", null);
+            File flashFile = new File(flashFilename);
+            if (flashFile.exists() && flashFile.isFile()) {
+                // set the format property as false
+                setProperty("ZS_REFORMAT", "0");
+            }
+        }
         zsState = new ZSState();
         int resultCode = ZSNative.ZSInit(zsState);
         ZSExceptionHandler.handleClient(resultCode);
@@ -118,6 +133,10 @@ public class ZSManager {
 
     public void closeContainer(String containerName) {
         containerManager.closeContainer(containerName);
+    }
+
+    public boolean containerExists(String containerName) {
+        return containerManager.isClosedContainer(containerName);
     }
 
     private long currentThreadStateHandler() {

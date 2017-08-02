@@ -5,6 +5,8 @@ import com.windjammer.zetascale.type.ContainerProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,6 +16,7 @@ public class ZSContainerManager {
     private static final Logger logger = LoggerFactory.getLogger(ZSContainerManager.class);
     // container register table
     private ConcurrentHashMap<String, ZSContainer> containers = new ConcurrentHashMap<>();
+    private Set<String> closedContainers = new HashSet<>();
 
     // avoid to use this
     public ZSContainer getContainer(long threadStateHandler, String containerName) {
@@ -29,6 +32,9 @@ public class ZSContainerManager {
                                     ContainerProperty property) {
         if (containers.containsKey(containerName)) {
             return containers.get(containerName);
+        }
+        if (closedContainers.contains(containerName)) {
+            return openContainer(threadStateHandler, containerName, property);
         }
         try {
             ZSContainer container = new ZSContainer(threadStateHandler, containerName, property);
@@ -76,9 +82,14 @@ public class ZSContainerManager {
         try {
             container.closeContainer();
             containers.remove(containerName);
+            closedContainers.add(containerName);
         } catch (ZSContainerException e) {
             throw new RuntimeException("close container failed.", e);
         }
+    }
+
+    public boolean isClosedContainer(String containerName) {
+        return closedContainers.contains(containerName);
     }
 
 

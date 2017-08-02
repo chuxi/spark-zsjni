@@ -45,13 +45,19 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNative_ZSShutdown
 JNIEXPORT jstring JNICALL Java_com_windjammer_zetascale_ZSNative_ZSGetProperty
   (JNIEnv *env, jclass jcls, jstring jprop, jstring jprop_default) {
     const char *prop = (*env)->GetStringUTFChars(env, jprop, NULL);
-    const char *prop_value = (*env)->GetStringUTFChars(env, jprop_default, NULL);
+    const char *prop_value = NULL;
+    if (jprop_default != NULL) {
+        prop_value = (*env)->GetStringUTFChars(env, jprop_default, NULL);
+    }
     const char *ret = ZSGetProperty(prop, prop_value);
-    jstring jret = (*env)->NewStringUTF(env, ret);
+    jstring jret = NULL;
+    if (ret != NULL) {
+        jret = (*env)->NewStringUTF(env, ret);
+        ZSFreeBuffer((char *)ret);
+    }
 
     (*env)->ReleaseStringUTFChars(env, jprop, prop);
     (*env)->ReleaseStringUTFChars(env, jprop_default, prop_value);
-    ZSFreeBuffer((char *)ret);
 
     return jret;
 }

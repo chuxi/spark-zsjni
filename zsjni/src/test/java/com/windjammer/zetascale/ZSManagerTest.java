@@ -28,12 +28,20 @@ public class ZSManagerTest {
 
     @Test
     public void singleThreadOperations() throws Exception {
-        ZSContainer container = manager.getContainer("container-test");
+        String containerName = "container-test";
+        ZSContainer container = manager.getContainer(containerName);
         byte[] key = "key-test".getBytes();
         String data = "data-test";
         container.write(key, data.getBytes());
         String result = new String(container.read(key));
         Assert.assertEquals(data, result);
+        long cguidHandler = container.getContainerId();
+        manager.closeContainer(containerName);
+        // reopen
+        container = manager.getContainer(containerName);
+        result = new String(container.read(key));
+        Assert.assertEquals(data, result);
+        manager.closeContainer(containerName);
     }
 
     @Test
@@ -48,6 +56,44 @@ public class ZSManagerTest {
             t.join();
         }
 //        Thread.sleep(10000);
+    }
+
+    @Test
+    public void containerOpenInNewThread() throws ZSException {
+        // write some key value in main thread
+        ZSContainer container = manager.getContainer("c0");
+        byte[] key = new byte[16];
+        byte[] data = "d0".getBytes();
+        container.write(key, data);
+        manager.closeContainer("c0");
+
+        // read the value in new thread with new open container
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    manager.initPerThreadState();
+                    ZSContainer ct = manager.openContainer("c0");
+                    String res = new String(ct.read(key));
+                    Assert.assertEquals("d0", res);
+                    ct.closeContainer();
+                } catch (ZSException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    try {
+                        manager.releasePerThreadState();
+                    } catch (ZSThreadException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+
+        }
     }
 
     @AfterClass

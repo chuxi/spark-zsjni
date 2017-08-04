@@ -3,6 +3,8 @@ package com.windjammer.zetascale;
 import com.windjammer.zetascale.exception.ZSContainerException;
 import com.windjammer.zetascale.exception.ZSExceptionHandler;
 import com.windjammer.zetascale.type.ContainerProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by king on 17-7-24.
@@ -11,6 +13,7 @@ public class ZSContainer {
     private long containerId;
     private String containerName;
     private long threadStateHandler;
+    private static Logger logger = LoggerFactory.getLogger(ZSContainer.class);
 
     public long getContainerId() {
         return this.containerId;
@@ -34,13 +37,16 @@ public class ZSContainer {
     }
 
     private void handleCreate(ContainerProperty containerProp) throws ZSContainerException {
+//        logger.warn("create container " + containerName + "'s thread handler: " + threadStateHandler);
         int resultCode = ZSNativeContainer.ZSOpenContainer(threadStateHandler, containerName, 1, containerProp);
         ZSExceptionHandler.handleContainer(resultCode);
         this.containerId = containerProp.getContainerId();
+
     }
 
     public static ZSContainer openContainer(long threadStateHandler, String containerName, ContainerProperty containerProp)
             throws ZSContainerException {
+//        logger.warn("open container " + containerName + "'s thread handler: " + threadStateHandler);
         int resultCode = ZSNativeContainer.ZSOpenContainer(threadStateHandler, containerName, 2, containerProp);
         ZSExceptionHandler.handleContainer(resultCode);
         ZSContainer container = new ZSContainer();
@@ -87,7 +93,7 @@ public class ZSContainer {
     }
 
     public void write(byte[] key, byte[] data, int writeobjectMode) throws ZSContainerException {
-        if(key != null && data != null && key.length != 0) {
+        if(key != null && data != null && key.length != 0 && data.length != 0) {
             int resultCode = ZSNativeContainer.ZSWriteObject(threadStateHandler, this.containerId, key, data, writeobjectMode);
             ZSExceptionHandler.handleContainer(resultCode);
         } else {

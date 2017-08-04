@@ -16,7 +16,7 @@ public class ZSContainerManager {
     private static final Logger logger = LoggerFactory.getLogger(ZSContainerManager.class);
     // container register table
     private ConcurrentHashMap<String, ZSContainer> containers = new ConcurrentHashMap<>();
-    private Set<String> closedContainers = new HashSet<>();
+    private Set<String> existsContainers = new HashSet<>();
 
     // avoid to use this
     public ZSContainer getContainer(long threadStateHandler, String containerName) {
@@ -30,10 +30,7 @@ public class ZSContainerManager {
 
     public ZSContainer getContainer(long threadStateHandler, String containerName,
                                     ContainerProperty property) {
-        if (containers.containsKey(containerName)) {
-            return containers.get(containerName);
-        }
-        if (closedContainers.contains(containerName)) {
+        if (existsContainers.contains(containerName)) {
             return openContainer(threadStateHandler, containerName, property);
         }
         try {
@@ -48,14 +45,9 @@ public class ZSContainerManager {
     // for read only mode
     public ZSContainer openContainer(long threadStateHandler, String containerName,
                                      ContainerProperty property) {
-        if (containers.containsKey(containerName)) {
-            logger.warn("container " + containerName + " is open, close it first.");
-            return null;
-        }
         try {
             ZSContainer container = ZSContainer.openContainer(
                     threadStateHandler, containerName, property);
-            containers.put(containerName, container);
             return container;
         } catch (ZSContainerException e) {
             throw new RuntimeException("open container failed.", e);
@@ -74,22 +66,17 @@ public class ZSContainerManager {
 
 
     public void closeContainer(String containerName) {
-        if (!containers.containsKey(containerName)) {
-            logger.warn("container " + containerName + " has closed.");
-            return;
-        }
         ZSContainer container = containers.get(containerName);
         try {
             container.closeContainer();
-            containers.remove(containerName);
-            closedContainers.add(containerName);
+            existsContainers.add(containerName);
         } catch (ZSContainerException e) {
             throw new RuntimeException("close container failed.", e);
         }
     }
 
-    public boolean isClosedContainer(String containerName) {
-        return closedContainers.contains(containerName);
+    public boolean containerExists(String containerName) {
+        return existsContainers.contains(containerName);
     }
 
 

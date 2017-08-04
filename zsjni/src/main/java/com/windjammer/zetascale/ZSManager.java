@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 /**
@@ -136,11 +134,10 @@ public class ZSManager {
     }
 
     public boolean containerExists(String containerName) {
-        return containerManager.isClosedContainer(containerName);
+        return containerManager.containerExists(containerName);
     }
 
     private long currentThreadStateHandler() {
         return threadStateLocal.get().getThreadStateHandler();
     }
-
 }

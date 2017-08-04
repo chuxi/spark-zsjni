@@ -2,6 +2,7 @@ package com.windjammer.zetascale;
 
 import com.windjammer.zetascale.exception.ZSContainerException;
 import com.windjammer.zetascale.exception.ZSThreadException;
+import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,9 +49,9 @@ public class ZSBenchmark {
                 ZSContainer container = manager.getContainer("container-" + index);
                 for (int i = 0; i < M; i++) {
                     byte[] key = ("key-" + index + "-" + i).getBytes();
-                    String data = "data" + index + "-" + i;
-                    container.write(key, data.getBytes());
-                    container.read(key);
+                    byte[] data = ("data" + index + "-" + i).getBytes();
+                    container.write(key, data);
+                    Assert.assertArrayEquals(container.read(key), data);
                 }
             } catch (ZSContainerException e) {
                 throw new RuntimeException("container error.", e);

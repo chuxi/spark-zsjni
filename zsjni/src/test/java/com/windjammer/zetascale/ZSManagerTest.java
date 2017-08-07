@@ -42,6 +42,7 @@ public class ZSManagerTest {
         result = new String(container.read(key));
         Assert.assertEquals(data, result);
         manager.closeContainer(containerName);
+        manager.deleteContainer(containerName);
     }
 
     @Test
@@ -73,7 +74,7 @@ public class ZSManagerTest {
             public void run() {
                 try {
                     manager.initPerThreadState();
-                    ZSContainer ct = manager.openContainer("c0");
+                    ZSContainer ct = manager.getContainer("c0");
                     String res = new String(ct.read(key));
                     Assert.assertEquals("d0", res);
                     ct.closeContainer();
@@ -94,6 +95,7 @@ public class ZSManagerTest {
         } catch (InterruptedException e) {
 
         }
+        manager.deleteContainer("c0");
     }
 
     @AfterClass
@@ -120,12 +122,14 @@ public class ZSManagerTest {
                 container.write(key, data.getBytes());
                 String result = new String(container.read(key));
                 Assert.assertEquals(data, result);
+                container.closeContainer();
             } catch (ZSContainerException e) {
                 throw new RuntimeException("container error.", e);
             } catch (ZSThreadException e) {
                 throw new RuntimeException("thread error.", e);
             } finally {
                 try {
+                    manager.deleteContainer("container-" + index);
                     manager.releasePerThreadState();
                 } catch (ZSThreadException e) {
                     throw new RuntimeException("release thread state failed.", e);

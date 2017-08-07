@@ -17,12 +17,13 @@ import java.util.function.Supplier;
 public class ZSManager {
     private static Logger logger = LoggerFactory.getLogger(ZSManager.class);
     private static ZSManager instance = null;
-    private static final ThreadLocal<ZSThreadState> threadStateLocal = ThreadLocal.withInitial(new Supplier<ZSThreadState>() {
-        @Override
-        public ZSThreadState get() {
-            return new ZSThreadState();
-        }
-    });
+    private static final ThreadLocal<ZSThreadState> threadStateLocal =
+            ThreadLocal.withInitial(new Supplier<ZSThreadState>() {
+                @Override
+                public ZSThreadState get() {
+                    return new ZSThreadState();
+                }
+            });
     private static ZSState zsState = null;
     private static ZSContainerManager containerManager = new ZSContainerManager();
 
@@ -119,15 +120,15 @@ public class ZSManager {
         return containerManager.getContainer(threadStateHandler, containerName, containerProp);
     }
 
-    public ZSContainer openContainer(String containerName) {
-        long threadStateHandler = currentThreadStateHandler();
-        return containerManager.openContainer(threadStateHandler, containerName);
-    }
-
-    public ZSContainer openContainer(String containerName, ContainerProperty containerProp) {
-        long threadStateHandler = currentThreadStateHandler();
-        return containerManager.openContainer(threadStateHandler, containerName, containerProp);
-    }
+//    public ZSContainer openContainer(String containerName) {
+//        long threadStateHandler = currentThreadStateHandler();
+//        return containerManager.openContainer(threadStateHandler, containerName);
+//    }
+//
+//    public ZSContainer openContainer(String containerName, ContainerProperty containerProp) {
+//        long threadStateHandler = currentThreadStateHandler();
+//        return containerManager.openContainer(threadStateHandler, containerName, containerProp);
+//    }
 
     public void closeContainer(String containerName) {
         containerManager.closeContainer(containerName);
@@ -135,6 +136,10 @@ public class ZSManager {
 
     public boolean containerExists(String containerName) {
         return containerManager.containerExists(containerName);
+    }
+
+    public void deleteContainer(String containerName) {
+        containerManager.deleteContainer(containerName);
     }
 
     private long currentThreadStateHandler() {

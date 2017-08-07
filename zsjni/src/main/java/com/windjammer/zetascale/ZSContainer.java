@@ -13,6 +13,7 @@ public class ZSContainer {
     private long containerId;
     private String containerName;
     private long threadStateHandler;
+    private boolean isActive;
     private static Logger logger = LoggerFactory.getLogger(ZSContainer.class);
 
     public long getContainerId() {
@@ -27,10 +28,15 @@ public class ZSContainer {
         return threadStateHandler;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
     private ZSContainer() {}
 
     public ZSContainer(long threadStateHandler, String containerName, ContainerProperty containerProp)
             throws ZSContainerException {
+        this.isActive = true;
         this.threadStateHandler = threadStateHandler;
         this.containerName = containerName;
         this.handleCreate(containerProp);
@@ -50,6 +56,7 @@ public class ZSContainer {
         int resultCode = ZSNativeContainer.ZSOpenContainer(threadStateHandler, containerName, 2, containerProp);
         ZSExceptionHandler.handleContainer(resultCode);
         ZSContainer container = new ZSContainer();
+        container.isActive = true;
         container.threadStateHandler = threadStateHandler;
         container.containerName = containerName;
         container.containerId = containerProp.getContainerId();
@@ -63,6 +70,7 @@ public class ZSContainer {
 
     public void closeContainer() throws ZSContainerException {
         int resultCode = ZSNativeContainer.ZSCloseContainer(threadStateHandler, this.containerId);
+        isActive = false;
         ZSExceptionHandler.handleContainer(resultCode);
     }
 

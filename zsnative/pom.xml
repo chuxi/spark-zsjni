@@ -41,6 +41,7 @@
                         </source>
                     </sources>
                     <compilerStartOptions>
+                        <compilerStartOption>-std=c11</compilerStartOption>
                         <compilerStartOption>-I src/main/c/zs_sdk-2.0/include</compilerStartOption>
                         <compilerStartOption>-I ${java.home}/../include</compilerStartOption>
                         <compilerStartOption>-I ${java.home}/../include/linux</compilerStartOption>

@@ -109,4 +109,10 @@ public class ZSContainer {
         }
     }
 
+    @Override
+    public String toString() {
+        return "containerName: " + containerName +
+                ", threadStateHandler: " + threadStateHandler +
+                ", containerId: " + containerId;
+    }
 }

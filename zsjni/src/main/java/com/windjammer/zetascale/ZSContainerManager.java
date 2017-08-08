@@ -32,7 +32,7 @@ public class ZSContainerManager {
         if (containers.containsKey(containerName)) {
             ZSContainer container = containers.get(containerName);
             if (container.isActive()) {
-                return container;
+                throw new RuntimeException("get an open container, close it first");
             } else {
                 return openContainer(threadStateHandler, containerName, property);
             }

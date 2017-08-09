@@ -66,7 +66,7 @@ public class ZSManagerTest {
         byte[] key = new byte[16];
         byte[] data = "d0".getBytes();
         container.write(key, data);
-        manager.closeContainer("c0");
+        container.closeContainer();
 
         // read the value in new thread with new open container
         Thread t = new Thread(new Runnable() {
@@ -78,6 +78,7 @@ public class ZSManagerTest {
                     String res = new String(ct.read(key));
                     Assert.assertEquals("d0", res);
                     ct.closeContainer();
+                    ct.deleteContainer();
                 } catch (ZSException e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -95,7 +96,6 @@ public class ZSManagerTest {
         } catch (InterruptedException e) {
 
         }
-        manager.deleteContainer("c0");
     }
 
     @AfterClass

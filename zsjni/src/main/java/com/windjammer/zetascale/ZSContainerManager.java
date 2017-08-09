@@ -52,6 +52,8 @@ public class ZSContainerManager {
         try {
             ZSContainer container = ZSContainer.openContainer(
                     threadStateHandler, containerName, property);
+            // replace the original container
+            containers.put(containerName, container);
             return container;
         } catch (ZSContainerException e) {
             throw new RuntimeException("open container failed.", e);

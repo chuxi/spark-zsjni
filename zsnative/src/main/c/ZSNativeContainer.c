@@ -45,6 +45,9 @@ static void getContainerProp(JNIEnv *env, ZS_container_props_t *props, jobject j
     // get cacheOnly
     jfieldID cacheOnlyId = (*env)->GetFieldID(env, containerPropertyClass, "cacheOnly", "Z");
     props->cache_only = (*env)->GetBooleanField(env, jcontainer_prop, cacheOnlyId);
+    // get flags
+    jfieldID flagsId = (*env)->GetFieldID(env, containerPropertyClass, "flags", "I");
+    props->flags = (*env)->GetIntField(env, jcontainer_prop, flagsId);
 }
 
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSLoadCntrPropDefaults
@@ -88,6 +91,9 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSLoadCnt
     // set compression
     jfieldID compressionId = (*env)->GetFieldID(env, containerPropertyClass, "compression", "Z");
     (*env)->SetBooleanField(env, jcontainer_prop, compressionId, props.compression);
+    // set flags
+    jfieldID flagsId = (*env)->GetFieldID(env, containerPropertyClass, "flags", "I");
+    (*env)->SetIntField(env, jcontainer_prop, flagsId, props.flags);
 
     return status;
 }
@@ -100,8 +106,8 @@ JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNativeContainer_ZSOpenCon
     getContainerProp(env, &props, jcontainer_prop);
     struct ZS_thread_state *thd_state = (struct ZS_thread_state *)jthread_state_handler;
     const char *cname = (*env)->GetStringUTFChars(env, jname, NULL);
-//    printf("open container with properties: cguid %ld, flags %d, size_kb %ld \n",
-//           (long)props.cguid, (int)props.flags, props.size_kb);
+//    printf("open container with properties: cguid %ld, flag %d, props.flags %d, props.size_kb %ld \n",
+//           (long)props.cguid, flag, (int)props.flags, props.size_kb);
     ZS_cguid_t cguid = 0;
     ZS_status_t status = ZSOpenContainer(thd_state, cname, &props, (uint32_t)flag, &cguid);
 

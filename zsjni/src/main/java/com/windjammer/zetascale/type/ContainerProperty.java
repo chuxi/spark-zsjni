@@ -29,6 +29,8 @@ public class ContainerProperty {
     private boolean cacheOnly;
     private boolean compression;
 
+    private int flags;
+
     private static final String SIZE = "size_gb";
     private static final String FIFO = "fifo";
     private static final String EVICTING = "evicting";
@@ -40,6 +42,7 @@ public class ContainerProperty {
     private static final String FLASH_ONLY = "flash_only";
     private static final String CACHE_ONLY = "cache_only";
     private static final String COMPRESSION = "compression";
+    private static final String FLAGS = "flags";
 
     public static ContainerProperty getDefautProperty() throws ZSContainerException {
         ContainerProperty property = new ContainerProperty();
@@ -95,7 +98,11 @@ public class ContainerProperty {
             }
             if (props.get(COMPRESSION) != null)
             {
-                cProperty.setCacheOnly(Boolean.parseBoolean(props.get(CACHE_ONLY)));
+                cProperty.setCompression(Boolean.parseBoolean(props.get(COMPRESSION)));
+            }
+            if (props.get(FLAGS) != null)
+            {
+                cProperty.setFlags(Integer.parseInt(props.get(FLAGS)));
             }
         }
         return cProperty;
@@ -113,6 +120,7 @@ public class ContainerProperty {
         flashOnly = false;
         cacheOnly = false;
         compression = false;
+        flags = 0;
     }
 
     public boolean getFlashOnly() {
@@ -213,6 +221,14 @@ public class ContainerProperty {
 
     public void setCompression(boolean compression) {
         this.compression = compression;
+    }
+
+    public int getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
     }
 
     public String toString() {

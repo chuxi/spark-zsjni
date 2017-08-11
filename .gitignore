@@ -6,3 +6,5 @@ target
 
 .DS_Store
 cmake-build-debug
+
+zs_sdk*

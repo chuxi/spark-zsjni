@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  * Created by king on 17-7-31.
  */
 public class ZSBenchmark {
-    private static int N = 2;
+    private static int N = 4;
     private static int M = 100 * 1000;
     private static ExecutorService service = Executors.newFixedThreadPool(N);
     private static ZSManager manager = ZSManager.getInstance();

@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
     }
 
     //Get the version ZS the program running with.
-    if (ZSGetVersion(&version) == ZS_SUCCESS) {
-        printf("This is a sample program using ZS %s\n", version);
-        ZSFreeBuffer(version);
-    }
+//    if (ZSGetVersion(&version) == ZS_SUCCESS) {
+//        printf("This is a sample program using ZS %s\n", version);
+//        ZSFreeBuffer(version);
+//    }
 
     //Initialize ZS state.
     if ((status = ZSInit(&zs_state)) != ZS_SUCCESS) {

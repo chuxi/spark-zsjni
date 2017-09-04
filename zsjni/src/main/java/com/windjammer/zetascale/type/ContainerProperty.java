@@ -117,7 +117,7 @@ public class ContainerProperty {
         asyncWrite = false;
         durabilityLevel = 1;
         shardNumber = 1;
-        flashOnly = false;
+        flashOnly = true;
         cacheOnly = false;
         compression = false;
         flags = 0;

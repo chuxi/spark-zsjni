@@ -29,11 +29,11 @@ JNIEXPORT void JNICALL Java_com_windjammer_zetascale_ZSNative_ZSSetProperty
 JNIEXPORT jint JNICALL Java_com_windjammer_zetascale_ZSNative_ZSInit
   (JNIEnv *env, jclass jcls, jobject jstate) {
     jclass jstate_class = (*env)->GetObjectClass(env, jstate);
-    jfieldID cguidId = (*env)->GetFieldID(env, jstate_class, "cguidHandler", "J");
+    jfieldID zsStateId = (*env)->GetFieldID(env, jstate_class, "zsStateHandler", "J");
 
     ZS_status_t status = ZSInit(&state);
-    // set the cguid_cntr in zs_state
-    (*env)->SetLongField(env, jstate, cguidId, (jlong)status);
+    // set the zsStateId in zs_state
+    (*env)->SetLongField(env, jstate, zsStateId, (jlong)status);
     return status;
 }
 
